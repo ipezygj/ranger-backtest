@@ -208,6 +208,7 @@ function renderState(state) {
   var pos = state.positions || {};
   var coins = Object.keys(pos);
   $("posCount").textContent = coins.length;
+  $("summaryActivePos").textContent = coins.length;
 
   if (coins.length === 0) {
     $("positionsContainer").innerHTML = '<div class="empty">No active positions</div>';
@@ -283,11 +284,94 @@ function renderState(state) {
   $("whipsawContainer").innerHTML = whipHtml;
 }
 
+function renderSummary(trades) {
+  if (!trades || trades.length === 0) return;
+
+  var opens = [];
+  var closes = [];
+  var firstTs = null;
+  var totalHoldSec = 0;
+  var holdCount = 0;
+
+  for (var i = 0; i < trades.length; i++) {
+    var t = trades[i];
+    if (t.ts && !firstTs) firstTs = new Date(t.ts);
+    if (t.action === "OPEN") opens.push(t);
+    if (t.action === "CLOSE") {
+      closes.push(t);
+      if (t.hold_seconds) { totalHoldSec += t.hold_seconds; holdCount++; }
+    }
+  }
+
+  var totalTrades = opens.length + closes.length;
+  $("tradeCount").textContent = totalTrades;
+
+  // Win rate from closes
+  if (closes.length > 0) {
+    var wins = 0;
+    var bestPnl = -Infinity;
+    var worstPnl = Infinity;
+    var bestCoin = "--";
+    var worstCoin = "--";
+    for (var j = 0; j < closes.length; j++) {
+      var c = closes[j];
+      var yld = c.earned_yield || 0;
+      var fee = c.fee || 0;
+      var net = yld - fee;
+      if (net > 0) wins++;
+      if (net > bestPnl) { bestPnl = net; bestCoin = c.coin || "?"; }
+      if (net < worstPnl) { worstPnl = net; worstCoin = c.coin || "?"; }
+    }
+    var wr = (wins / closes.length) * 100;
+    $("summaryWinRate").textContent = wr.toFixed(1) + "% (" + wins + "/" + closes.length + ")";
+    $("summaryWinRate").className = "val " + (wr >= 50 ? "green" : "red");
+    $("summaryBest").textContent = fmt(bestPnl) + " (" + bestCoin + ")";
+    $("summaryBest").className = "val " + pnlClass(bestPnl);
+    $("summaryWorst").textContent = fmt(worstPnl) + " (" + worstCoin + ")";
+    $("summaryWorst").className = "val " + pnlClass(worstPnl);
+  } else {
+    $("summaryWinRate").textContent = "-- (no closes yet)";
+    $("summaryWinRate").className = "val dim";
+    $("summaryBest").textContent = "--";
+    $("summaryBest").className = "val dim";
+    $("summaryWorst").textContent = "--";
+    $("summaryWorst").className = "val dim";
+  }
+
+  // Avg hold time
+  if (holdCount > 0) {
+    $("summaryAvgHold").textContent = fmtTime(totalHoldSec / holdCount);
+  } else {
+    $("summaryAvgHold").textContent = "--";
+  }
+
+  // Runtime
+  if (firstTs) {
+    var runtimeSec = (Date.now() - firstTs.getTime()) / 1000;
+    $("summaryRuntime").textContent = fmtTime(runtimeSec);
+
+    // Est APY: annualize net PnL / total deployed capital
+    var totalDeployed = 0;
+    for (var k = 0; k < opens.length; k++) {
+      totalDeployed += opens[k].size_usd || 0;
+    }
+    if (totalDeployed > 0 && runtimeSec > 60) {
+      var netPnlVal = parseFloat($("netPnl").textContent.replace("$","").replace("-$","-")) || 0;
+      var roiPct = netPnlVal / totalDeployed;
+      var secsPerYear = 365.25 * 24 * 3600;
+      var apy = roiPct * (secsPerYear / runtimeSec) * 100;
+      $("summaryAPY").textContent = (apy >= 0 ? "+" : "") + apy.toFixed(1) + "%";
+      $("summaryAPY").className = "val " + pnlClass(apy);
+    }
+  }
+}
+
 function renderTrades(trades) {
   if (!trades || trades.length === 0) {
     $("tradesBody").innerHTML = '<tr><td colspan="8" class="empty">No trades yet</td></tr>';
     return;
   }
+  renderSummary(trades);
   var html = "";
   for (var i = trades.length - 1; i >= 0; i--) {
     var t = trades[i];
