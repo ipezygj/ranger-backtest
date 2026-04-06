@@ -143,6 +143,9 @@ var BREAKEVEN_LOCK_PCT = 0.0002;
 var countdownVal = REFRESH_SEC;
 var BASE = "";
 var dataTimestamp = null;
+var statePnl = 0;
+var stateTotalYield = 0;
+var statePositions = {};
 
 function $(id) { return document.getElementById(id); }
 function fmt(n, d) { d = d || 4; return (n >= 0 ? "$" : "-$") + Math.abs(n).toFixed(d); }
@@ -183,16 +186,19 @@ function fetchJSON(url, cb) {
 function renderState(state) {
   if (!state) return;
   var pnl = state.total_pnl || 0;
+  statePnl = pnl;
+  statePositions = state.positions || {};
   $("totalPnl").textContent = fmt(pnl);
   $("totalPnl").className = "pnl-big " + pnlClass(pnl);
   // Yield = closed yield + active positions' accrued yield
   var activeYield = 0;
-  var pos = state.positions || {};
+  var pos = statePositions;
   var posCoins = Object.keys(pos);
   for (var yi = 0; yi < posCoins.length; yi++) {
     activeYield += (pos[posCoins[yi]].earned_yield || 0);
   }
   var totalYieldVal = (state.total_yield || 0) + activeYield;
+  stateTotalYield = totalYieldVal;
   $("totalYield").textContent = fmt(totalYieldVal);
   $("totalFees").textContent = fmt(state.total_fees || 0);
   $("netPnl").textContent = fmt(pnl);
@@ -382,9 +388,7 @@ function renderSummary(trades) {
     }
     var avgDeployed = runtimeSec > 0 ? capitalSeconds / runtimeSec : 0;
     if (avgDeployed > 0 && runtimeSec > 60) {
-      var netPnlVal = parseFloat($("totalPnl").textContent.replace("$","").replace("-$","-")) || 0;
-      if ($("totalPnl").textContent.indexOf("-$") >= 0) netPnlVal = -netPnlVal;
-      var roiPct = netPnlVal / avgDeployed;
+      var roiPct = statePnl / avgDeployed;
       var secsPerYear = 365.25 * 24 * 3600;
       var apy = roiPct * (secsPerYear / runtimeSec) * 100;
       $("summaryAPY").textContent = (apy >= 0 ? "+" : "") + apy.toFixed(1) + "%";
