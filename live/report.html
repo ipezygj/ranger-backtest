@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranger -- Performance Report</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#060a0f;color:#b0b0b0;font-family:"Courier New",monospace;font-size:13px;padding:12px;max-width:600px;margin:0 auto}
+h1{color:#00d48a;font-size:16px;text-align:center;padding:10px 0}
+h2{color:#00cc66;font-size:13px;margin:14px 0 6px;padding:4px 0;border-bottom:1px solid #1c2a38}
+.card{background:#0c1219;border:1px solid #1c2a38;border-radius:4px;padding:10px;margin-bottom:8px}
+.row{display:flex;justify-content:space-between;padding:2px 0}
+.label{color:#4a6070}
+.green{color:#00d48a} .red{color:#f44336} .cyan{color:#2196f3} .dim{color:#3a4a58}
+.pnl-big{font-size:20px;text-align:center;padding:6px 0}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{color:#4a6070;text-align:left;padding:3px 4px;border-bottom:1px solid #1c2a38;background:#0c1219}
+td{padding:2px 4px;border-bottom:1px solid #111a24}
+tr:hover{background:#111a24}
+svg{max-width:100%;height:auto;display:block;margin:4px 0}
+.nav{text-align:center;font-size:11px;margin-bottom:8px}
+.nav a{color:#00d48a;text-decoration:none}
+.footer{text-align:center;color:#3a4a58;font-size:10px;margin-top:16px;padding:8px}
+</style>
+</head>
+<body>
+<h1>[ RANGER PERFORMANCE REPORT ]</h1>
+<div class="nav">
+  <a href="./">Live Dashboard</a> | <a href="../">Backtest</a> |
+  <a href="https://github.com/ipezygj/Ranger-Sovereign-Vault">Source</a>
+</div>
+
+<h2>// SUMMARY</h2>
+<div class="card">
+  <div class="pnl-big" style="color:#f44336">-$0.002114</div>
+  <div class="row"><span class="label">Total trades</span><span>3 (3 opens, 0 closes)</span></div>
+  <div class="row"><span class="label">Active positions</span><span class="cyan">3</span></div>
+  <div class="row"><span class="label">Yield earned</span><span class="green">$0.000000</span></div>
+  <div class="row"><span class="label">Fees paid</span><span class="red">$0.011516</span></div>
+  <div class="row"><span class="label">Win rate</span><span style="color:#f44336">0.0% (0/0)</span></div>
+  <div class="row"><span class="label">Est. APY</span><span style="color:#f44336">-65.2%</span></div>
+  <div class="row"><span class="label">Best trade</span><span class="green">$0.000000 (--)</span></div>
+  <div class="row"><span class="label">Worst trade</span><span class="red">$0.000000 (--)</span></div>
+  <div class="row"><span class="label">Avg hold time</span><span>0h 0m</span></div>
+  <div class="row"><span class="label">Total runtime</span><span class="cyan">0.9 hours</span></div>
+  <div class="row"><span class="label">Generated</span><span class="dim">2026-04-06 06:51 UTC</span></div>
+</div>
+
+<h2>// EQUITY CURVE</h2>
+<div class="card"><svg width="520" height="180" xmlns="http://www.w3.org/2000/svg">
+<rect width="100%%" height="100%%" fill="#0c1219"/>
+<line x1="40" y1="140.0" x2="480" y2="140.0" stroke="#1c2a38" stroke-dasharray="4"/>
+<polyline points="40.0,40.0 354.6,90.3 359.3,140.0 480.0,140.0" fill="none" stroke="#f44336" stroke-width="2"/>
+<text x="40" y="175" fill="#4a6070" font-size="10" font-family="monospace">0</text>
+<text x="480" y="175" fill="#4a6070" font-size="10" font-family="monospace" text-anchor="end">0.9h</text>
+<text x="5" y="44" fill="#4a6070" font-size="10" font-family="monospace">$-0.0038</text>
+<text x="5" y="140" fill="#4a6070" font-size="10" font-family="monospace">$-0.0115</text>
+</svg></div>
+
+<h2>// NET PnL BY COIN</h2>
+<div class="card"><svg width="480" height="86" xmlns="http://www.w3.org/2000/svg">
+<rect width="100%%" height="100%%" fill="#0c1219"/>
+<text x="94" y="23" fill="#b0b0b0" font-size="11" font-family="monospace" text-anchor="end">FTT</text>
+<rect x="100" y="10" width="360" height="18" fill="#00d48a" rx="2"/>
+<text x="464" y="23" fill="#00d48a" font-size="10" font-family="monospace">+0.0041</text>
+<text x="94" y="45" fill="#b0b0b0" font-size="11" font-family="monospace" text-anchor="end">REZ</text>
+<rect x="100" y="32" width="266" height="18" fill="#f44336" rx="2"/>
+<text x="370" y="45" fill="#f44336" font-size="10" font-family="monospace">-0.0030</text>
+<text x="94" y="67" fill="#b0b0b0" font-size="11" font-family="monospace" text-anchor="end">AVNT</text>
+<rect x="100" y="54" width="279" height="18" fill="#f44336" rx="2"/>
+<text x="383" y="67" fill="#f44336" font-size="10" font-family="monospace">-0.0032</text>
+</svg></div>
+
+
+
+<h2>// TRADE LOG</h2>
+<div class="card" style="overflow-x:auto">
+<table>
+<thead><tr><th>Time</th><th>Action</th><th>Coin</th><th>Side</th><th>Size</th><th>Price</th><th>Rate/8h</th><th>Detail</th></tr></thead>
+<tbody><tr><td>2026-04-06 06:36</td><td style="color:#00d48a">OPEN</td><td>AVNT</td><td>LONG</td><td>$10.90</td><td>$0.13127</td><td>-0.2145%</td><td>fee:$0.0038</td></tr>
+<tr><td>2026-04-06 06:36</td><td style="color:#00d48a">OPEN</td><td>REZ</td><td>LONG</td><td>$11.01</td><td>$0.00347</td><td>-0.2465%</td><td>fee:$0.0039</td></tr>
+<tr><td>2026-04-06 05:59</td><td style="color:#00d48a">OPEN</td><td>FTT</td><td>LONG</td><td>$11.00</td><td>$0.29405</td><td>-0.7242%</td><td>fee:$0.0038</td></tr>
+<tr><td>2026-04-06 05:59</td><td style="color:#f44336">OPEN_NOFILL</td><td>FTT</td><td>LONG</td><td>$10.00</td><td>$0.29406</td><td>-0.7238%</td><td></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="footer">
+  Ranger Sovereign Vault | Ranger Build-A-Bear Hackathon 2025<br>
+  Report generated 2026-04-06 06:51 UTC from live engine data
+</div>
+</body>
+</html>
