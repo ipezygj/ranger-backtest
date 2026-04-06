@@ -185,7 +185,15 @@ function renderState(state) {
   var pnl = state.total_pnl || 0;
   $("totalPnl").textContent = fmt(pnl);
   $("totalPnl").className = "pnl-big " + pnlClass(pnl);
-  $("totalYield").textContent = fmt(state.total_yield || 0);
+  // Yield = closed yield + active positions' accrued yield
+  var activeYield = 0;
+  var pos = state.positions || {};
+  var posCoins = Object.keys(pos);
+  for (var yi = 0; yi < posCoins.length; yi++) {
+    activeYield += (pos[posCoins[yi]].earned_yield || 0);
+  }
+  var totalYieldVal = (state.total_yield || 0) + activeYield;
+  $("totalYield").textContent = fmt(totalYieldVal);
   $("totalFees").textContent = fmt(state.total_fees || 0);
   $("netPnl").textContent = fmt(pnl);
   $("netPnl").className = "val " + pnlClass(pnl);
