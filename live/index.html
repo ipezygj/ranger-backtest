@@ -358,14 +358,33 @@ function renderSummary(trades) {
     var runtimeSec = (Date.now() - firstTs.getTime()) / 1000;
     $("summaryRuntime").textContent = fmtTime(runtimeSec);
 
-    // Est APY: annualize net PnL / total deployed capital
-    var totalDeployed = 0;
-    for (var k = 0; k < opens.length; k++) {
-      totalDeployed += opens[k].size_usd || 0;
+    // Est APY: total PnL / avg capital deployed / runtime, annualized
+    // Average deployed = sum(each position's size_usd * hold_seconds) / runtime
+    // For closed trades: use recorded hold_seconds. For open: use time since entry.
+    var capitalSeconds = 0;
+    var nowSec = Date.now() / 1000;
+    for (var k = 0; k < closes.length; k++) {
+      capitalSeconds += (closes[k].size_usd || 0) * (closes[k].hold_seconds || 0);
     }
-    if (totalDeployed > 0 && runtimeSec > 60) {
-      var netPnlVal = parseFloat($("netPnl").textContent.replace("$","").replace("-$","-")) || 0;
-      var roiPct = netPnlVal / totalDeployed;
+    for (var k = 0; k < opens.length; k++) {
+      // Check if this open has a matching close (by coin+ts); if not, it's still active
+      var op = opens[k];
+      var matched = false;
+      for (var m = 0; m < closes.length; m++) {
+        if (closes[m].coin === op.coin && new Date(closes[m].ts) > new Date(op.ts)) {
+          matched = true; break;
+        }
+      }
+      if (!matched && op.ts) {
+        var openSec = nowSec - new Date(op.ts).getTime() / 1000;
+        capitalSeconds += (op.size_usd || 0) * openSec;
+      }
+    }
+    var avgDeployed = runtimeSec > 0 ? capitalSeconds / runtimeSec : 0;
+    if (avgDeployed > 0 && runtimeSec > 60) {
+      var netPnlVal = parseFloat($("totalPnl").textContent.replace("$","").replace("-$","-")) || 0;
+      if ($("totalPnl").textContent.indexOf("-$") >= 0) netPnlVal = -netPnlVal;
+      var roiPct = netPnlVal / avgDeployed;
       var secsPerYear = 365.25 * 24 * 3600;
       var apy = roiPct * (secsPerYear / runtimeSec) * 100;
       $("summaryAPY").textContent = (apy >= 0 ? "+" : "") + apy.toFixed(1) + "%";
