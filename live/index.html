@@ -75,14 +75,22 @@ tr:hover{background:#111a24}
   <span class="status-item">Next refresh: <span id="countdown" class="dim">60</span>s</span>
 </div>
 
-<!-- PnL Summary -->
+<!-- Performance Summary (computed from trades.json) -->
+<h2>// PERFORMANCE SUMMARY</h2>
 <div class="card">
   <div class="pnl-big" id="totalPnl">$0.0000</div>
   <div class="grid-2">
+    <div class="row"><span class="label">Total trades</span><span class="val" id="tradeCount">0</span></div>
+    <div class="row"><span class="label">Active positions</span><span class="val cyan" id="summaryActivePos">0</span></div>
     <div class="row"><span class="label">Yield earned</span><span class="val green" id="totalYield">$0.0000</span></div>
     <div class="row"><span class="label">Fees paid</span><span class="val red" id="totalFees">$0.0000</span></div>
     <div class="row"><span class="label">Net PnL</span><span class="val" id="netPnl">$0.0000</span></div>
-    <div class="row"><span class="label">Total trades</span><span class="val" id="tradeCount">0</span></div>
+    <div class="row"><span class="label">Win rate</span><span class="val" id="summaryWinRate">--</span></div>
+    <div class="row"><span class="label">Est. APY</span><span class="val" id="summaryAPY">--</span></div>
+    <div class="row"><span class="label">Best trade</span><span class="val green" id="summaryBest">--</span></div>
+    <div class="row"><span class="label">Worst trade</span><span class="val red" id="summaryWorst">--</span></div>
+    <div class="row"><span class="label">Avg hold time</span><span class="val" id="summaryAvgHold">--</span></div>
+    <div class="row"><span class="label">Total runtime</span><span class="val cyan" id="summaryRuntime">--</span></div>
   </div>
 </div>
 
